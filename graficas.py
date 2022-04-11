@@ -59,7 +59,7 @@ class grafica:
             
         plt.show()
         
-        self.limpiarFigura()
+        self.reiniciarFigura()
         
     def diagramaHR(self, bp_rp, phot_g_mean_mag, guardar=True, tempt=False):
         
@@ -104,7 +104,7 @@ class grafica:
             
         plt.show()
         
-        self.limpiarFigura()
+        self.reiniciarFigura()
         
     def limpiarFigura(self):
         self.ax.cla()
