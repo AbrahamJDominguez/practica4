@@ -77,14 +77,8 @@ class grafica:
         
         colb.ax.invert_xaxis()
         
-        self.ax.tick_params(
-        axis='x',          # changes apply to the x-axis
-        which='both',      # both major and minor ticks are affected
-        bottom=False,      # ticks along the bottom edge are off
-        top=False,         # ticks along the top edge are off
-        labelbottom=False)
-            
-        #self.fig.patch.set_facecolor('dimgray')
+        self.ax.tick_params(axis='x', which='both', bottom=False, labelbottom=False)
+        
         self.ax.set_facecolor((0,0,0))
         
         if tempt:
