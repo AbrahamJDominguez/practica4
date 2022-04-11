@@ -47,6 +47,29 @@ def crearDiagramaHR():
             cont+=1
     
     graficas.diagramaHR(bp_rp, phot_g_mean_mag)
+    
+def crearDiagramaHR2():
+    
+    global dic
+    
+    bp_rp=dic["teff_val"]
+    
+    
+    phot_g_mean_mag=dic["phot_g_mean_mag"]
+    
+    
+    while "" in bp_rp:
+        cont=0
+        
+        for val in bp_rp:
+            
+            if not val:
+                bp_rp.pop(cont)
+                phot_g_mean_mag.pop(cont)
+                
+            cont+=1
+    
+    graficas.diagramaHR(bp_rp, phot_g_mean_mag, tempt=True)
 
 def crearMapaEstelar():
     
@@ -63,4 +86,4 @@ lista = estrella_teff()
 crearMapaEstelar()
 
 
-crearDiagramaHR()
+crearDiagramaHR2()

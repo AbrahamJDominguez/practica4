@@ -61,14 +61,21 @@ class grafica:
         
         self.limpiarFigura()
         
-    def diagramaHR(self, bp_rp, phot_g_mean_mag, guardar=True):
+    def diagramaHR(self, bp_rp, phot_g_mean_mag, guardar=True, tempt=False):
         
-        mapeo=self.ax.scatter(bp_rp, phot_g_mean_mag, c=bp_rp, s=2, cmap="RdYlBu_r", vmin=-1, vmax=5)
+        if tempt:
         
+            mapeo=self.ax.scatter(bp_rp, phot_g_mean_mag, c=bp_rp, s=2, cmap="RdYlBu", vmin=35000, vmax=2000)
+            
+        else:
+            mapeo=self.ax.scatter(bp_rp, phot_g_mean_mag, c=bp_rp, s=2, cmap="RdYlBu_r", vmin=-1, vmax=5)
+            
             
         cax = self.fig.add_axes([self.ax.get_position().x0,self.ax.get_position().y0,self.ax.get_position().width,0.01])
             
-        self.fig.colorbar(mapeo, cax=cax, orientation="horizontal")
+        colb=self.fig.colorbar(mapeo, cax=cax, orientation="horizontal")
+        
+        colb.ax.invert_xaxis()
         
         self.ax.tick_params(
         axis='x',          # changes apply to the x-axis
@@ -80,9 +87,16 @@ class grafica:
         #self.fig.patch.set_facecolor('dimgray')
         self.ax.set_facecolor((0,0,0))
         
-        self.ax.set_xlim(-1,5)
-        self.ax.set_xlim(-10,20)
+        if tempt:
         
+            self.ax.set_xlim(2000,35000)
+        
+            self.ax.invert_xaxis()
+            
+        else:
+            self.ax.set_xlim(-1,5)
+            
+        self.ax.set_ylim(-10,20)
         self.ax.invert_yaxis()
         
         if guardar:
