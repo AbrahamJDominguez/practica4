@@ -66,6 +66,14 @@ class Archivo:
                     
             return tabla
         
+    def crearArchivo(self,nombre_archivo,diccionario,noEstrella):
+      with open(self.ruta + nombre_archivo, "w") as archivo:
+          temp=diccionario["teff_val"][noEstrella]
+          ar=diccionario["ra"][noEstrella]
+          dec=diccionario["dec"][noEstrella]
+          archivo.write("Esta estrella tiene una temperatura efectiva de "+str(temp)+" sus coordenadas (ascensión recta,declinacion) son ("+str(ar)+","+str(dec)+ ")")
+          archivo.write("-------------------------------------\n")
+        
     def leerArchivos(self, archivo1="",  *args):
         tabla1=self.leerArchivo(archivo1)
         #tabla2=self.leerArchivo(archivo2)
