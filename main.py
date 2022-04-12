@@ -9,8 +9,8 @@ tabla3="E:/practica4_copia/GaiaSource-1000677386549270528-1000959999693425920.cs
 colr="E:/practica4_copia/coloresCuerpoNegro.txt"
 
 archivo = p.Archivo()
-colores = p.Archivo().obtenerColoresCuerpoN()
-dic = archivo.leerArchivos()
+colores = p.Archivo().obtenerColoresCuerpoN(colr)
+dic = archivo.leerArchivo(tabla1)
 
 graficas = graf.grafica()   
 
@@ -100,7 +100,7 @@ def crearDiagramaHR2():
             cont+=1
     
     #graficas.diagramaHR(bp_rp, phot_g_mean_mag, tempt=True)
-    graficas.diagramaHR(bp_rp, g_abs, tempt=True)
+    graficas.diagramaHR(bp_rp, g_abs, tempt=True, zoom=True)
 
 def crearMapaEstelar():
     
