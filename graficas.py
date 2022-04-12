@@ -37,6 +37,9 @@ class grafica:
             
         #self.ax.scatter(229.6375, 2.0811, s=20, color=(1,1,1))
         
+        self.ax.set_xlabel("Ascensión recta ($^o$)")
+        self.ax.set_ylabel("Declinación ($^o$)")
+        
         if guardar:
             self.fig.savefig("mapaEstelar.jpg")
             
@@ -66,6 +69,7 @@ class grafica:
         if tempt:
         
             mapeo=self.ax.scatter(bp_rp, phot_g_mean_mag, c=bp_rp, s=2, cmap="RdYlBu", vmin=35000, vmax=2000)
+            #mapeo=self.ax.scatter(bp_rp, phot_g_mean_mag, c=bp_rp, s=2, cmap="RdYlBu", vmin=11000, vmax=2000)
             
         else:
             mapeo=self.ax.scatter(bp_rp, phot_g_mean_mag, c=bp_rp, s=2, cmap="RdYlBu_r", vmin=-1, vmax=5)
@@ -89,8 +93,12 @@ class grafica:
             
         else:
             self.ax.set_xlim(-1,5)
-            
-        self.ax.set_ylim(-10,20)
+        
+        ylim_S = max(phot_g_mean_mag) + 5
+        ylim_i = min(phot_g_mean_mag) - 5
+        self.ax.set_ylim(ylim_i, ylim_S)
+        #self.ax.set_ylim(-10,20)
+        
         self.ax.invert_yaxis()
         
         if guardar:
@@ -109,4 +117,3 @@ class grafica:
         
 if __name__=="__main__":
     grafica().radiacionCuerpoN(3000)
-        

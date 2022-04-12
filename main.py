@@ -1,5 +1,6 @@
 import graficas as graf
 import proyecto as p
+import math
 
 tabla="E:/practica4_copia/1649354370049O-result.csv"
 tabla1="E:/practica4_copia/GaiaSource-1000172165251650944-1000424567594791808.csv"
@@ -8,11 +9,11 @@ tabla3="E:/practica4_copia/GaiaSource-1000677386549270528-1000959999693425920.cs
 colr="E:/practica4_copia/coloresCuerpoNegro.txt"
 
 archivo = p.Archivo()
-colores=p.Archivo().obtenerColoresCuerpoN(colr)
-dic=archivo.leerArchivos(tabla1, tabla2, tabla3)
+colores = p.Archivo().obtenerColoresCuerpoN()
+dic = archivo.leerArchivos()
 
-graficas = graf.grafica()
-    
+graficas = graf.grafica()   
+
 def estrella_teff():
     
     teff=dic["teff_val"]
@@ -24,6 +25,17 @@ def estrella_teff():
             lista.append(teff.index(temp))
             
     return lista
+
+def densidadFlujo():
+    
+    CBoltz=5.67*10**-8
+    F=[]
+    teff=dic["teff_val"]
+    
+    for i in lista:
+        F.append(CBoltz*float(teff[i]))
+    
+    return F
 
 def crearDiagramaHR():
     
@@ -54,8 +66,25 @@ def crearDiagramaHR2():
     
     bp_rp=dic["teff_val"]
     
-    
+    parallax=dic["parallax"]
     phot_g_mean_mag=dic["phot_g_mean_mag"]
+    g_abs=[]
+    #g_abs=dic["g_abs"]
+    
+    while "" in parallax:
+        cont=0
+        
+        for val in parallax:
+            
+            if not val:
+                parallax.pop(cont)
+                phot_g_mean_mag.pop(cont)
+                bp_rp.pop(cont)
+                
+            cont+=1
+            
+    for i in range(len(parallax)):
+        g_abs.append(phot_g_mean_mag[i] + 5 + 5*math.log10(abs(parallax[i])/1000))
     
     
     while "" in bp_rp:
@@ -65,11 +94,13 @@ def crearDiagramaHR2():
             
             if not val:
                 bp_rp.pop(cont)
-                phot_g_mean_mag.pop(cont)
+                #phot_g_mean_mag.pop(cont)
+                g_abs.pop(cont)
                 
             cont+=1
     
-    graficas.diagramaHR(bp_rp, phot_g_mean_mag, tempt=True)
+    #graficas.diagramaHR(bp_rp, phot_g_mean_mag, tempt=True)
+    graficas.diagramaHR(bp_rp, g_abs, tempt=True)
 
 def crearMapaEstelar():
     
@@ -82,8 +113,8 @@ def crearMapaEstelar():
     graficas.mapaEstelar(x, y, indice=lista, teff=teffval, colores=colores, guardar=False)
     
 lista = estrella_teff()
+F = densidadFlujo()
 
 crearMapaEstelar()
-
 
 crearDiagramaHR2()
