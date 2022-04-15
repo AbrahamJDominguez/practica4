@@ -41,7 +41,7 @@ class grafica:
                     self.ax.scatter(ar[i], dec[i], s=2, color=colores[round(teff[i]*0.01)*100])
                     continue
                 self.ax.scatter(ar[i], dec[i], s=2, color='r')
-            
+        
         #self.ax.set_xlim(45,50)
         #self.ax.set_ylim(2,6)
             
@@ -49,6 +49,7 @@ class grafica:
         
         self.ax.set_xlabel("Ascensión recta ($^o$)")
         self.ax.set_ylabel("Declinación ($^o$)")
+        self.ax.set_title("Mapa estelar")
         
         if guardar:
             self.fig.savefig("mapaEstelar.jpg")
@@ -73,7 +74,7 @@ class grafica:
         plt.show()
         
         
-    def diagramaHR(self, bp_rp, phot_g_mean_mag, guardar=True, tempt=False, zoom=False):
+    def diagramaHR(self, bp_rp, phot_g_mean_mag, radius, guardar=True, tempt=False, zoom=False):
         self.reiniciarFigura()
         
         vmin=35000
@@ -81,18 +82,19 @@ class grafica:
         
         if tempt:
         
-            mapeo=self.ax.scatter(bp_rp, phot_g_mean_mag, c=bp_rp, s=2, cmap="RdYlBu", vmin=vmin, vmax=vmax)
+            mapeo=self.ax.scatter(bp_rp, phot_g_mean_mag, c=bp_rp, s=radius, cmap="RdYlBu", vmin=vmin, vmax=vmax)
             #mapeo=self.ax.scatter(bp_rp, phot_g_mean_mag, c=bp_rp, s=2, cmap="RdYlBu", vmin=11000, vmax=2000)
             
         else:
-            mapeo=self.ax.scatter(bp_rp, phot_g_mean_mag, c=bp_rp, s=2, cmap="RdYlBu_r", vmin=-1, vmax=5)
-            
+            mapeo=self.ax.scatter(bp_rp, phot_g_mean_mag, c=bp_rp, s=radius, cmap="RdYlBu_r", vmin=-1, vmax=5)
+            self.ax.set_xlabel("Color BP-RP ($G_{BP}-G_{RP}$)")
+            self.ax.set_title("Diagrama de Hertzsprung-Russell")
         
         self.ax.set_facecolor((0,0,0))
         
         if tempt and zoom:
-            temp_max=max(bp_rp)+5
-            temp_min=min(bp_rp)-5
+            temp_max=max(bp_rp)+500
+            temp_min=min(bp_rp)-500
             
             cax = self.fig.add_axes([self.ax.get_position().x0,self.ax.get_position().y0-0.1
                                      ,self.ax.get_position().width,0.01])
@@ -118,6 +120,8 @@ class grafica:
         
             self.ax.invert_xaxis()
             
+            self.ax.set_title("Diagrama de Hertzsprung-Russell ($T_{eff}$ [K])")
+            
         elif tempt and not zoom:
             cax = self.fig.add_axes([self.ax.get_position().x0,self.ax.get_position().y0
                                      ,self.ax.get_position().width,0.01])
@@ -131,17 +135,19 @@ class grafica:
         
             self.ax.invert_xaxis()
             
-        else:
-            self.ax.set_xlim(-1,5)
+            self.ax.set_title("Diagrama de Hertzsprung-Russell ($T_{eff}$ [K])")
+            
+        else: 
+            self.ax.set_xlim(min(bp_rp)-0.5, max(bp_rp)+0.5)
+            #self.ax.set_xlim(-1,5)
         
         #colb.ax.invert_xaxis()
         
-        ylim_S = max(phot_g_mean_mag) + 5
-        ylim_i = min(phot_g_mean_mag) - 5
-        self.ax.set_ylim(ylim_i, ylim_S)
-        self.ax.set_ylim(-10,20)
-        
+        #self.ax.set_ylim(-10,20)
+        self.ax.set_ylim(min(phot_g_mean_mag) - 5, max(phot_g_mean_mag) + 5)
         self.ax.invert_yaxis()
+        
+        self.ax.set_ylabel("Magnitud absoluta ($M_G$)")
         
         if guardar:
             self.fig.savefig("diagramaHR.jpg")
