@@ -1,6 +1,7 @@
 import csv
 import tkinter
 from tkinter import filedialog
+import main as m
 
 def ventanaArchivo():
     root=tkinter.Tk()
@@ -66,13 +67,17 @@ class Archivo:
                     
             return tabla
         
-    def crearArchivo(self,nombre_archivo,diccionario,noEstrella):
-      with open(self.ruta + nombre_archivo, "w") as archivo:
-          temp=diccionario["teff_val"][noEstrella]
-          ar=diccionario["ra"][noEstrella]
-          dec=diccionario["dec"][noEstrella]
-          archivo.write("Esta estrella tiene una temperatura efectiva de "+str(temp)+" sus coordenadas (ascensión recta,declinacion) son ("+str(ar)+","+str(dec)+ ")")
-          archivo.write("-------------------------------------\n")
+    def crearArchivo(self,nombre_archivo,tempMax,coord_ar,coord_dec,teff_o):
+        ruta="C:/Users/cimen/OneDrive/Documentos/pooe"
+        with open(ruta + nombre_archivo, "w") as archivo:
+            archivo.write("La temperatura máxima del conjunto de estrellas en ese radio es: "+str(tempMax)+"\n")
+            archivo.write("-------------------------------------\n")
+            F=m.densidadFlujo(teff_o)
+            archivo.write("Estrella\t\tAscension recta\t\tDeclinacion\t\t\tTemperatura efectiva\t\tDensidad de flujo\n")
+            for i in range(len(teff_o)):
+                archivo.write(str(i) +"\t\t\t"+ str(coord_ar[i])+"\t\t"+str(coord_dec[i])+"\t\t"+str(teff_o[i])+"\t\t\t\t"+str(F[i]))
+                archivo.write("\n")       
+        print("Archivo creado correctamente ")
         
     def leerArchivos(self, archivo1="",  *args):
         tabla1=self.leerArchivo(archivo1)
