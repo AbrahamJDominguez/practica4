@@ -27,7 +27,7 @@ class grafica:
         self.fig, self.ax = plt.subplots()
         
     
-    def mapaEstelar(self, ar, dec, indice="", colores=[], teff=[], guardar=False):
+    def mapaEstelar(self, ar, dec, objeto, indice="", colores=[], teff=[], guardar=False):
         self.reiniciarFigura()
         
         self.ax.scatter(ar, dec, s=2, color="blue")
@@ -47,6 +47,15 @@ class grafica:
             
         #self.ax.scatter(229.6375, 2.0811, s=20, color=(1,1,1))
         
+        if objeto:
+            self.ax.scatter(objeto[0], objeto[1], s=3, color='r')
+            #self.ax.axhline(y=objeto[1]-objeto[2], xmin=objeto[0]-objeto[2], xmax=objeto[0]+objeto[2],color="y")
+            #self.ax.axhline(y=objeto[1]+objeto[2], xmin=objeto[0]-objeto[2], xmax=objeto[0]+objeto[2],color="y")
+            theta=np.linspace(0, 2*np.pi, 100)
+            a=objeto[2]*np.cos(theta) + objeto[0]
+            b=objeto[2]*np.sin(theta) + objeto[1]
+            self.ax.plot(a, b, color='g')
+        
         self.ax.set_xlabel("Ascensión recta ($^o$)")
         self.ax.set_ylabel("Declinación ($^o$)")
         self.ax.set_title("Mapa estelar")
@@ -57,20 +66,27 @@ class grafica:
         plt.show()
 
         
-    def radiacionCuerpoN(self, teff, guardar=False):
+    def radiacionCuerpoN(self, teff,tempMax, guardar=False):
         import numpy as np
         self.reiniciarFigura()
         
-        def f(x):
+        def f(x, teff):
             return (2*(c/x)**3)/(c**2)*h*1/(np.exp((h*(c/x))/(k*teff))-1)   
         
-        x=np.linspace(0, 0.0001, 1000)
+        x=np.linspace(0, 3*10**-6, 1000)
+        for val in teff:
+            if val==tempMax:
+                self.ax.plot(x, f(x, val),color="r",label=r"TempMax=%d$^o$C"%tempMax)
+            else:
+                self.ax.plot(x, f(x, val))
         
-        self.ax.plot(x, f(x))
-        
+        self.ax.set_xlabel("Longitud de onda ($\mu m$)")
+        self.ax.set_ylabel("Intensidad ($W/m^2Hz^2sterad$)")
+        self.ax.set_title("Espectro de radiación del cuerpo negro") 
+        self.ax.legend()
         if guardar:
             self.fig.savefig("radiacionCuerpoNegro.jpg")
-            
+        
         plt.show()
         
         
