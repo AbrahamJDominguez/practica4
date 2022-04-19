@@ -27,6 +27,7 @@ def estrella_teff():
             
     return lista
 
+"""
 def densidadFlujo():
     
     CBoltz=5.67*10**-8
@@ -35,6 +36,16 @@ def densidadFlujo():
     
     for i in lista:
         F.append(CBoltz*float(teff[i]))
+    
+    return F
+"""
+def densidadFlujo(teff_o):
+    
+    CBoltz=5.67*10**-8
+    F=[]
+    
+    for i in teff_o:
+        F.append(CBoltz*i)
     
     return F
 
@@ -137,15 +148,66 @@ def crearMapaEstelar():
     
     global colores
     
+    objeto=[]
     x=dic["ra"]
     y=dic["dec"]
     teffval=dic["teff_val"]
+    teff_o=[]
+    coord_ar=[]
+    coord_dec=[]
     
-    graficas.mapaEstelar(x, y, indice=lista, teff=teffval, colores=colores, guardar=False)
+    opcion=int(input("¿Desea señalar un objeto en el mapa estelar? 1. Sí, 2. No : "))
+    #opcion=1
     
+    if opcion==1:    
+        
+        ascension=input("Ascensión recta (h/m/s): ")
+        declinacion=input("Declinación (°/'/''): ")
+        ascension=ascension.split("/")
+        ascension[1]=float(ascension[1])/60
+        ascension[2]=float(ascension[2])/3600
+        ar=(float(ascension[0])+ascension[1]+ascension[2])*15
+        declinacion=declinacion.split("/")
+        declinacion[1]=float(declinacion[1])/60
+        declinacion[2]=float(declinacion[2])/3600
+        dec= float(declinacion[0])+declinacion[1]+declinacion[2]
+        objeto.append(ar)
+        objeto.append(dec)
+        objeto.append(float(input("Radio de búsqueda (en grados): ")))
+        
+        #objeto=[308.6, 40.75, 0.8]
+        for index in range(len(x)):
+            if ((x[index]-objeto[0])**2 + (y[index]-objeto[1])**2) <= objeto[2]**2:
+                if teffval[index]:    
+                    teff_o.append(teffval[index])
+                    coord_ar.append(round(x[index],13))
+                    coord_dec.append(round(y[index],14))
+        #print(teff_o)
+        
+        c=0
+        for temp in teff_o:
+            if c==0:
+                tempMax=temp
+            else:
+                if(temp>tempMax):
+                   tempMax=temp 
+                else:
+                    tempMax=tempMax
+            c+=1
+        print(tempMax)
+        graficas.mapaEstelar(x, y, objeto, indice=lista, teff=teffval, colores=colores, guardar=False)
+
+        if not teff_o:
+            print("No se encontraron estrellas con ese radio de búsqueda.")
+            
+        else:
+            graficas.radiacionCuerpoN(teff_o,tempMax,guardar=False)
+    return tempMax,coord_ar,coord_dec,teff_o
+            
+  
+            
 lista = estrella_teff()
-F = densidadFlujo()
-
-crearMapaEstelar()
-
+ruta="C:/Users/cimen/OneDrive/Documentos/pooe/" 
+tempMax,coord_ar,coord_dec,teff_o=crearMapaEstelar()
+archivo.crearArchivo("Estrellas.txt",tempMax,coord_ar,coord_dec,teff_o)
 crearDiagramaHR()
