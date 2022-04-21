@@ -39,15 +39,6 @@ def densidadFlujo():
     
     return F
 """
-def densidadFlujo(teff_o):
-    
-    CBoltz=5.67*10**-8
-    F=[]
-    
-    for i in teff_o:
-        F.append(CBoltz*i)
-    
-    return F
 
 def crearDiagramaHR():
     
@@ -156,26 +147,28 @@ def crearMapaEstelar():
     coord_ar=[]
     coord_dec=[]
     
-    opcion=int(input("¿Desea señalar un objeto en el mapa estelar? 1. Sí, 2. No : "))
-    #opcion=1
+    #opcion=int(input("¿Desea señalar un objeto en el mapa estelar? 1. Sí, 2. No : "))
+    opcion=1
     
-    if opcion==1:    
+    if opcion==1:
         
-        ascension=input("Ascensión recta (h/m/s): ")
-        declinacion=input("Declinación (°/'/''): ")
-        ascension=ascension.split("/")
-        ascension[1]=float(ascension[1])/60
-        ascension[2]=float(ascension[2])/3600
-        ar=(float(ascension[0])+ascension[1]+ascension[2])*15
-        declinacion=declinacion.split("/")
-        declinacion[1]=float(declinacion[1])/60
-        declinacion[2]=float(declinacion[2])/3600
-        dec= float(declinacion[0])+declinacion[1]+declinacion[2]
-        objeto.append(ar)
-        objeto.append(dec)
-        objeto.append(float(input("Radio de búsqueda (en grados): ")))
+        coord=int(input("Elija el tipo de coordenadas: 1. [h/m/s, °/'/''] , 2. Grados : "))
         
-        #objeto=[308.6, 40.75, 0.8]
+        if coord==1:
+            ascension=input("Ascensión recta (h/m/s): ")
+            declinacion=input("Declinación (°/'/''): ")
+            ar, dec=conversion(ascension, declinacion)
+        
+            objeto.append(ar)
+            objeto.append(dec)
+            objeto.append(float(input("Radio de búsqueda (en grados): ")))
+            
+        else:
+            objeto.append(float(input("Ascensión recta (en grados): ")))
+            objeto.append(float(input("Declinación (en grados): ")))
+            objeto.append(float(input("Radio de búsqueda (en grados): ")))
+        
+        #objeto=[308.6, 40.75, 0.1]
         for index in range(len(x)):
             if ((x[index]-objeto[0])**2 + (y[index]-objeto[1])**2) <= objeto[2]**2:
                 if teffval[index]:    
@@ -194,20 +187,29 @@ def crearMapaEstelar():
                 else:
                     tempMax=tempMax
             c+=1
-        print(tempMax)
         graficas.mapaEstelar(x, y, objeto, indice=lista, teff=teffval, colores=colores, guardar=False)
 
         if not teff_o:
-            print("No se encontraron estrellas con ese radio de búsqueda.")
-            
-        else:
-            graficas.radiacionCuerpoN(teff_o,tempMax,guardar=False)
+            print("Se han encontrado " + str(len(teff_o)) + " estrellas con temperatura efectiva conocida.")
+            graficas.radiacionCuerpoN(teff_o,tempMax)
+
+    else:
+        graficas.mapaEstelar(x, y, objeto, indice=lista, teff=teffval, colores=colores, guardar=False)
     return tempMax,coord_ar,coord_dec,teff_o
             
-  
+def conversion(ascension, declinacion):
+    ascension=ascension.split("/")
+    ascension[1]=float(ascension[1])/60
+    ascension[2]=float(ascension[2])/3600
+    ar=(float(ascension[0])+ascension[1]+ascension[2])*15
+    declinacion=declinacion.split("/")
+    declinacion[1]=float(declinacion[1])/60
+    declinacion[2]=float(declinacion[2])/3600
+    dec= float(declinacion[0])+declinacion[1]+declinacion[2]
+    
+    return ar, dec
             
 lista = estrella_teff()
-ruta="C:/Users/cimen/OneDrive/Documentos/pooe/" 
 tempMax,coord_ar,coord_dec,teff_o=crearMapaEstelar()
 archivo.crearArchivo("Estrellas.txt",tempMax,coord_ar,coord_dec,teff_o)
 crearDiagramaHR()
