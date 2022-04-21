@@ -1,7 +1,6 @@
 import csv
 import tkinter
 from tkinter import filedialog
-import main as m
 
 def ventanaArchivo():
     root=tkinter.Tk()
@@ -68,11 +67,16 @@ class Archivo:
             return tabla
         
     def crearArchivo(self,nombre_archivo,tempMax,coord_ar,coord_dec,teff_o):
-        ruta="C:/Users/cimen/OneDrive/Documentos/pooe"
+        ruta="C:/Users/cimen/OneDrive/Documentos/pooe/"
+        CBoltz=5.67*10**-8
+        F=[]
+        
+        for i in teff_o:
+            F.append(CBoltz*i)
         with open(ruta + nombre_archivo, "w") as archivo:
             archivo.write("La temperatura máxima del conjunto de estrellas en ese radio es: "+str(tempMax)+"\n")
             archivo.write("-------------------------------------\n")
-            F=m.densidadFlujo(teff_o)
+            #F=densidadFlujo(teff_o)
             archivo.write("Estrella\t\tAscension recta\t\tDeclinacion\t\t\tTemperatura efectiva\t\tDensidad de flujo\n")
             for i in range(len(teff_o)):
                 archivo.write(str(i) +"\t\t\t"+ str(coord_ar[i])+"\t\t"+str(coord_dec[i])+"\t\t"+str(teff_o[i])+"\t\t\t\t"+str(F[i]))
