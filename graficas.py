@@ -66,7 +66,7 @@ class grafica:
         plt.show()
 
         
-    def radiacionCuerpoN(self, teff,tempMax, guardar=False):
+    def radiacionCuerpoN(self, teff,tempMax, colores=[], guardar=False):
         import numpy as np
         self.reiniciarFigura()
         
@@ -74,9 +74,13 @@ class grafica:
             return (2*(c/x)**3)/(c**2)*h*1/(np.exp((h*(c/x))/(k*teff))-1)   
         
         x=np.linspace(0, 3*10**-6, 1000)
+        
         for val in teff:
             if val==tempMax:
                 self.ax.plot(x, f(x, val),color="r",label=r"TempMax=%d$^o$C"%tempMax)
+                
+            elif colores:
+                self.ax.plot(x, f(x, val), color=colores[round(teff[teff.index(val)]*0.01)*100])
             else:
                 self.ax.plot(x, f(x, val))
         

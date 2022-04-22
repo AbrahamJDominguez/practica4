@@ -63,11 +63,14 @@ class Archivo:
                     cont+=1
                     
             #print(self.archivo)
+            
+            self.ruta=self.extraerRuta()
                     
             return tabla
         
     def crearArchivo(self,nombre_archivo,tempMax,coord_ar,coord_dec,teff_o):
-        ruta="C:/Users/cimen/OneDrive/Documentos/pooe/"
+        #ruta="C:/Users/cimen/OneDrive/Documentos/pooe/"
+        ruta=self.ruta
         CBoltz=5.67*10**-8
         F=[]
         
