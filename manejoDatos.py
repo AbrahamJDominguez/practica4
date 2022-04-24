@@ -117,7 +117,6 @@ def datosDiagramaHR(dic, op="teff"):
         
 def datosMapaEstelarRadCN(dic, ob=False , objeto=[]):
     
-    objeto=[]
     x=copy.deepcopy(dic["ra"])
     y=copy.deepcopy(dic["dec"])
     teffval=copy.deepcopy(dic["teff_val"])
@@ -147,7 +146,7 @@ def datosMapaEstelarRadCN(dic, ob=False , objeto=[]):
                     tempMax=tempMax
             c+=1
             
-        return objeto, x, y, lista, teffval, teff_o, tempMax, coord_ar, coord_dec
+        return objeto, x, y, "", teffval, teff_o, tempMax, coord_ar, coord_dec
     
     else:
         c=0

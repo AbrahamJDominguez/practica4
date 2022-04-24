@@ -22,21 +22,35 @@ def truncate_colormap(cmap, minval=0.0, maxval=1.0, n=100):
 
 class grafica:
     
-    def __init__(self):
+    def __init__(self, interfaz=False):
         
-        self.fig, self.ax = plt.subplots()
+        self.interfaz=interfaz
+        
+        if not interfaz:
+            self.fig, self.ax = plt.subplots()
         
     
-    def mapaEstelar(self, ar, dec, objeto, indice="", colores=[], teff=[], guardar=False):
+    def mapaEstelar(self, ar, dec, objeto, indice="", colores=[], teff=[], ob=False, guardar=False):
+        
+        self.llamadaInterfaz()
+        
         self.reiniciarFigura()
         
         self.ax.scatter(ar, dec, s=2, color="blue")
         
         self.ax.set_facecolor((0,0,0))
         
-        if indice:
+        if indice and not ob:
             
             for i in indice:
+                if teff and colores:
+                    self.ax.scatter(ar[i], dec[i], s=2, color=colores[round(teff[i]*0.01)*100])
+                    continue
+                self.ax.scatter(ar[i], dec[i], s=2, color='r')
+                
+        if ob:
+            
+            for i in range(len(teff)):
                 if teff and colores:
                     self.ax.scatter(ar[i], dec[i], s=2, color=colores[round(teff[i]*0.01)*100])
                     continue
@@ -63,14 +77,19 @@ class grafica:
         if guardar:
             self.fig.savefig("mapaEstelar.jpg")
             
-        plt.show()
+        if not self.interfaz:
+            
+            plt.show()
+            
         
-        return self.fig, self.ax
+        return self.fig
 
         
-    def radiacionCuerpoN(self, teff,tempMax=0, colores=[], guardar=False):
+    def radiacionCuerpoN(self, teff,tempMax=0, colores=[], interfaz=False,guardar=False):
         import numpy as np
+        
         self.reiniciarFigura()
+        self.llamadaInterfaz()
         
         def f(x, teff):
             return (2*(c/x)**3)/(c**2)*h*1/(np.exp((h*(c/x))/(k*teff))-1)   
@@ -93,16 +112,23 @@ class grafica:
         if guardar:
             self.fig.savefig("radiacionCuerpoNegro.jpg")
         
-        plt.show()
+        if not self.interfaz:
+            
+            plt.show()
         
-        return self.fig, self.ax
+        return self.fig
         
         
-    def diagramaHR(self, bp_rp, phot_g_mean_mag, radius, guardar=True, tempt=False, zoom=False):
+    def diagramaHR(self, bp_rp, phot_g_mean_mag, radius, interfaz=False,guardar=True, tempt=False, zoom=False):
+
         self.reiniciarFigura()
+        self.llamadaInterfaz()
         
         vmin=35000
         vmax=2000
+        
+        self.ax.set_position([self.ax.get_position().x0,self.ax.get_position().y0+0.1
+                                 ,self.ax.get_position().width,self.ax.get_position().height-0.1])
         
         if tempt:
         
@@ -121,13 +147,13 @@ class grafica:
             temp_min=min(bp_rp)-500
             
             cax = self.fig.add_axes([self.ax.get_position().x0,self.ax.get_position().y0-0.1
-                                     ,self.ax.get_position().width,0.01])
+                                     ,self.ax.get_position().width,0.01], label="cbp")
             
             colb=self.fig.colorbar(mapeo, cax=cax, orientation="horizontal")
             colb.ax.invert_xaxis()
             
             cax2 = self.fig.add_axes([self.ax.get_position().x0,self.ax.get_position().y0
-                                     ,self.ax.get_position().width,0.01])
+                                     ,self.ax.get_position().width,0.01], label="cbs")
             
             fracmin=(temp_min-vmin)/(vmax-vmin)
             fracmax=(temp_max-vmin)/(vmax-vmin)
@@ -176,25 +202,47 @@ class grafica:
         if guardar:
             self.fig.savefig("diagramaHR.jpg")
             
-        plt.show()
+        if not self.interfaz:
+            
+            plt.show()
         
-        return self.fig, self.ax
+        return self.fig
         
     def limpiarFigura(self):
         self.ax.cla()
         self.fig.clf()
         
+    def llamadaInterfaz(self):
+        if self.interfaz:
+            self.fig, self.ax = plt.subplots() 
+        
     def reiniciarFigura(self):
-        if self.fig.get_axes() and (self.ax.collections or self.ax.lines):
-            self.fig, self.ax = plt.subplots()
+        try:
+            if self.fig.get_axes() and (self.ax.collections or self.ax.lines):
+                self.fig, self.ax = plt.subplots()
             #plt.close()
+            
+        except AttributeError:
+            pass
             
     def __bool__(self):
         
-        if self.fig.get_axes() and (self.ax.collections or self.ax.lines):
-            return True
+        try:
+            if self.fig.get_axes() and (self.ax.collections or self.ax.lines):
+                return True
+            
+            return False
         
-        return False
+        except AttributeError:
+
+            return False
+
+    def __getitem__(self, item):
+        if item == 0:
+            return self.fig
+        
+        elif item == 1:
+            return self.ax
         
         
 if __name__=="__main__":
