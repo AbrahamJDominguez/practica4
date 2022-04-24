@@ -11,13 +11,18 @@ import math
 import copy
 
 colr="coloresCuerpoNegro.txt"
-colores = p.Archivo().obtenerColoresCuerpoN(colr)
+colores = p.Archivo().obtenerColoresCuerpoN("clr")
 
-def coloresCuerpoNegro():
+def coloresCuerpoNegro(ruta=""):
     
-    global colores
+    if not ruta:
+        global colores
+        
+        return colores
     
-    return colores
+    else:
+        colores=p.Archivo().obtenerColoresCuerpoN(ruta)
+        return colores
 
 def depurar_lista(lista):
     

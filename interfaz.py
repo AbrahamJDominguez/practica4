@@ -14,7 +14,11 @@ from proyecto import Archivo
 from graficas import grafica as graf
 from manejoDatos import datosMapaEstelarRadCN, datosDiagramaHR, coloresCuerpoNegro
 
-colores=coloresCuerpoNegro()
+try:
+    colores=coloresCuerpoNegro()
+except FileNotFoundError:
+    colores=[]
+
 
 def _from_rgb(rgb):
     return "#%02x%02x%02x" % rgb 
@@ -47,6 +51,7 @@ class Ventana(tk.Tk):
     cno=[False,False]
     yahay=[mg,mo,hrt,hrb,cng,cno]
     cont=0
+    forzar=0
     
     def __init__(self, tam_min=(1200,600)):
         super().__init__()
@@ -84,6 +89,7 @@ class Ventana(tk.Tk):
         self._barra_menu()
         self.menu_archivos=tk.Menu(self._barra_opciones, tearoff=0)
         self.menu_archivos.add_command(label="Abrir archivo", command=self._seleccionar_archivo)
+        self.menu_archivos.add_command(label="Abrir colores", command=self._seleccionar_archivo_colores)
         self._barra_opciones.add_cascade(label="Archivo", menu=self.menu_archivos)
         self.config(menu=self._barra_opciones)
         
@@ -91,6 +97,12 @@ class Ventana(tk.Tk):
         self.archivo=filedialog.askopenfilename()
         if self.archivo:
             self._leer_archivo(self.archivo)
+            
+    def _seleccionar_archivo_colores(self):
+        ruta=filedialog.askopenfilename()
+        if ruta:
+            global colores
+            colores=coloresCuerpoNegro(ruta)
             
     def _leer_archivo(self, evento):
         try:
@@ -108,6 +120,14 @@ class Ventana(tk.Tk):
             print("El archivo no fue leido exitosamente")
         
     def _radiacionCN(self):
+        
+        self.forzar+=1
+        if self.forzar/2 == 2:
+            self.funcion1.set(1)
+            self.funcion2.set(1)
+            self.funcion3.set(1)
+            self.forzar=0
+            
         try:
             if self.objeto:
                 self._obtenerDatos()
@@ -137,6 +157,12 @@ class Ventana(tk.Tk):
             
         
     def _mapaEstelar(self, boton=False):
+        self.forzar+=1
+        if self.forzar/2 == 2:
+            self.funcion1.set(1)
+            self.funcion2.set(1)
+            self.funcion3.set(1)
+            self.forzar=0
         
         if self.funcion1.get() == 1 and not self.mg[1] and not boton:
         
@@ -149,6 +175,7 @@ class Ventana(tk.Tk):
             if not self.mg[0]:
                 self.figs["mapa"]=self.graficas[0].mapaEstelar(x, y, objeto, indice=lista, teff=teffval, colores=colores, guardar=False)
                 self.mg[0]=True
+                
             print("Figura creada, se imprimira en un momento")
             self._canvasFiguras("mapa")
             self.mg[1]=True
@@ -172,6 +199,13 @@ class Ventana(tk.Tk):
             self.mo[1]=True
         
     def _diagramaHR(self):
+        
+        self.forzar+=1
+        if self.forzar/2 == 2:
+            self.funcion1.set(1)
+            self.funcion2.set(1)
+            self.funcion3.set(1)
+            self.forzar=0
         
         if self.funcion2.get() == 1 and self.DHRtemp.get() == 1:
         
@@ -240,6 +274,7 @@ class Ventana(tk.Tk):
         
     def check1(self):
         self.funcion1=tk.IntVar()
+        self.funcion1.set(0)
         opfuncion1=tk.Checkbutton(self._cuadrocks, text="Mapa Estelar", variable=self.funcion1, command=self._mapaEstelar, onvalue=1, offvalue=0,bg=_from_rgb((100,102,200)))
         opfuncion1.place(relx=0, rely=0, relwidth=1)
         
@@ -358,5 +393,5 @@ class Ventana(tk.Tk):
         
 if __name__=="__main__":
     prin=Ventana()
-    
+        
     tk.mainloop()

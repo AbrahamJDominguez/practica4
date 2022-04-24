@@ -6,7 +6,6 @@ def ventanaArchivo():
     root=tkinter.Tk()
     root.withdraw()
     ruta=filedialog.askopenfilename() 
-    root.update()
 	
     return ruta
 
@@ -118,22 +117,26 @@ class Archivo:
         
     def obtenerColoresCuerpoN(self,ruta=""):
         
-        if not ruta:
-            ruta=ventanaArchivo()
-            
-        colores={}
-        with open(ruta, "r") as archivo:
-            for line in archivo:
-                line=line.strip()
-                col=line.split("  ")
-                #print(col[1])
-                if col[1]=="10deg":
-                    col[0]=float(col[0].split(" ")[0])
-                    colores[col[0]]=col[-1]
-                    
-        #print(colores)
+        try:
+            if not ruta:
+                ruta=ventanaArchivo()
                 
-        return colores
+            colores={}
+            with open(ruta, "r") as archivo:
+                for line in archivo:
+                    line=line.strip()
+                    col=line.split("  ")
+                    #print(col[1])
+                    if col[1]=="10deg":
+                        col[0]=float(col[0].split(" ")[0])
+                        colores[col[0]]=col[-1]
+                        
+            #print(colores)
+                    
+            return colores
+        
+        except FileNotFoundError:
+            return []
         
 if __name__=="__main__":
     
