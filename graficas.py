@@ -64,9 +64,11 @@ class grafica:
             self.fig.savefig("mapaEstelar.jpg")
             
         plt.show()
+        
+        return self.fig, self.ax
 
         
-    def radiacionCuerpoN(self, teff,tempMax, colores=[], guardar=False):
+    def radiacionCuerpoN(self, teff,tempMax=0, colores=[], guardar=False):
         import numpy as np
         self.reiniciarFigura()
         
@@ -92,6 +94,8 @@ class grafica:
             self.fig.savefig("radiacionCuerpoNegro.jpg")
         
         plt.show()
+        
+        return self.fig, self.ax
         
         
     def diagramaHR(self, bp_rp, phot_g_mean_mag, radius, guardar=True, tempt=False, zoom=False):
@@ -174,6 +178,8 @@ class grafica:
             
         plt.show()
         
+        return self.fig, self.ax
+        
     def limpiarFigura(self):
         self.ax.cla()
         self.fig.clf()
@@ -182,6 +188,14 @@ class grafica:
         if self.fig.get_axes() and (self.ax.collections or self.ax.lines):
             self.fig, self.ax = plt.subplots()
             #plt.close()
+            
+    def __bool__(self):
+        
+        if self.fig.get_axes() and (self.ax.collections or self.ax.lines):
+            return True
+        
+        return False
+        
         
 if __name__=="__main__":
     grafica().radiacionCuerpoN(3000)

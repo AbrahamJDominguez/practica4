@@ -31,6 +31,8 @@ class Archivo:
          
     def leerArchivo(self, archivo=""):
         
+        print(archivo)
+        
         if not archivo:
             self.archivo=ventanaArchivo()
             archivo=self.archivo
