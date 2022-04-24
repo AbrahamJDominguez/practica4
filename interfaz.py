@@ -45,6 +45,8 @@ class Ventana(tk.Tk):
     hrb=[False,False]
     cng=[False,False]
     cno=[False,False]
+    yahay=[mg,mo,hrt,hrb,cng,cno]
+    cont=0
     
     def __init__(self, tam_min=(1200,600)):
         super().__init__()
@@ -95,6 +97,9 @@ class Ventana(tk.Tk):
             self.datos=Archivo().leerArchivo(evento)
             self._obtenerDatos()
             print("datos obtenidos exitosamente")
+            for i in self.yahay:
+                i[0]=False
+                i[1]=False
             
             if self.datos:
                 self.graficas=[graf(interfaz=True), graf(interfaz=True), [graf(interfaz=True), graf(interfaz=True)]] 
@@ -108,9 +113,13 @@ class Ventana(tk.Tk):
                 self._obtenerDatos()
                 teff_o=self.MEO[5]
                 tempMax=self.MEO[6]
-                if not self.cno[0]:
+                if not self.cno[0] and self.cambio:
                     self.figs["CNO"]=self.graficas[1].radiacionCuerpoN(teff_o,tempMax,colores=colores)
                     self.cno[0]=True
+                    self.cont+=1
+                    if self.cont>=2:
+                        self.cambio=False
+                        self.cont=0
                     
                 self._canvasFiguras("CNO")
                 self.cno[1]=True
@@ -151,9 +160,13 @@ class Ventana(tk.Tk):
             teffval=self.MEO[5]
             lista=self.MEO[3]
             
-            if not self.mo[0]:
+            if not self.mo[0] and self.cambio:
                 self.figs["mapao"]=self.graficas[0].mapaEstelar(x, y, objeto, indice=lista, teff=teffval, colores=colores, ob=True, guardar=False)
                 self.mo[0]=True
+                self.cont+=1
+                if self.cont>=2:
+                    self.cambio=False
+                    self.cont=0
             print("Figura creada, se imprimira en un momento")
             self._canvasFiguras("mapao")
             self.mo[1]=True
@@ -300,6 +313,7 @@ class Ventana(tk.Tk):
             #try:
             self.objeto=[ar, dec, rad]
             self._obtenerDatos()
+            self._cambio()
             self._mapaEstelar(boton=True)
                 
             # except:
